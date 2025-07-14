@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User } from '../types';
+import { User, Investor, Entrepreneur } from '../types';
 import { authAPI } from '../services/api';
 
 interface AuthContextType {
@@ -42,29 +42,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       setIsLoading(false);
     };
+
     initializeAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
+    
     try {
       const response = await authAPI.login({ email, password });
       const { token, user } = response.data;
+      
       localStorage.setItem('token', token);
       localStorage.setItem('currentUser', JSON.stringify(user));
       setUser(user);
       setIsLoading(false);
       return true;
     } catch (error: any) {
-      let errorMsg = 'Login failed';
-      if (error.response?.data?.message) {
-        errorMsg = error.response.data.message;
-      }
-      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-        errorMsg = error.response.data.errors.map((e: any) => e.msg || e.message).join(' ');
-      }
-      setError(errorMsg);
+      setError(error.response?.data?.message || 'Login failed');
       setIsLoading(false);
       return false;
     }
@@ -73,23 +69,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (userData: Partial<User>): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
+    
     try {
       const response = await authAPI.register(userData);
       const { token, user } = response.data;
+      
       localStorage.setItem('token', token);
       localStorage.setItem('currentUser', JSON.stringify(user));
       setUser(user);
       setIsLoading(false);
       return true;
     } catch (error: any) {
-      let errorMsg = 'Registration failed';
-      if (error.response?.data?.message) {
-        errorMsg = error.response.data.message;
-      }
-      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-        errorMsg = error.response.data.errors.map((e: any) => e.msg || e.message).join(' ');
-      }
-      setError(errorMsg);
+      setError(error.response?.data?.message || 'Registration failed');
       setIsLoading(false);
       return false;
     }
@@ -123,4 +114,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       {children}
     </AuthContext.Provider>
   );
-}; 
+};

@@ -1,56 +1,35 @@
 export interface User {
-  _id?: string;
-  id?: string;
+  id: string;
   name: string;
   email: string;
   role: 'investor' | 'entrepreneur';
   avatar?: string;
   bio?: string;
   location?: string;
-  isActive?: boolean;
-  industries?: string[];
-  portfolio?: string[];
-  createdAt?: string;
-  updatedAt?: string;
-  lastLogin?: string;
-  startup?: string;
-  industry?: string;
-  fundingNeeded?: number;
-  pitchSummary?: string;
-  stage?: 'idea' | 'prototype' | 'mvp' | 'growth' | 'expansion';
-  teamSize?: number;
-  website?: string;
-  linkedin?: string;
-  company?: string;
-  investmentRange?: {
-    min: number;
-    max: number;
-  };
-  twitter?: string;
-  // Add any other fields your backend may return
+  createdAt: string;
 }
 
 export interface Entrepreneur extends User {
   role: 'entrepreneur';
-  startup?: string;
-  industry?: string;
-  fundingNeeded?: number;
-  pitchSummary?: string;
-  stage?: 'idea' | 'prototype' | 'mvp' | 'growth' | 'expansion';
-  teamSize?: number;
+  startup: string;
+  industry: string;
+  fundingNeeded: number;
+  pitchSummary: string;
+  stage: 'idea' | 'prototype' | 'mvp' | 'growth' | 'expansion';
+  teamSize: number;
   website?: string;
   linkedin?: string;
 }
 
 export interface Investor extends User {
   role: 'investor';
-  company?: string;
-  investmentRange?: {
+  company: string;
+  investmentRange: {
     min: number;
     max: number;
   };
-  industries?: string[];
-  portfolio?: string[];
+  industries: string[];
+  portfolio: string[];
   linkedin?: string;
   twitter?: string;
 }
@@ -80,4 +59,4 @@ export interface ChatRoom {
   messages: Message[];
   lastMessage?: Message;
   updatedAt: string;
-} 
+}
