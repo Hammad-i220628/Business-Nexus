@@ -26,7 +26,7 @@ A comprehensive backend API for the Business Nexus networking platform that conn
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- MongoDB database
+- MongoDB database (running locally on mongodb://localhost:27017)
 - npm or yarn
 
 ### Installation
@@ -37,7 +37,7 @@ A comprehensive backend API for the Business Nexus networking platform that conn
    ```
 
 2. **Environment Setup**:
-   The `.env` file is already configured with your MongoDB connection string.
+   The `.env` file is already configured with your local MongoDB connection string.
 
 3. **Seed the database**:
    ```bash
