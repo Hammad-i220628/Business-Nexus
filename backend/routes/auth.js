@@ -42,18 +42,12 @@ router.post('/register', registerValidation, validateRequest, async (req, res) =
     // Generate token
     const token = generateToken(user._id);
 
-    // Convert user to plain object and remove password
-    const userObj = user.toObject();
-    delete userObj.password;
-
-    // SEND RESPONSE AND RETURN IMMEDIATELY
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
       message: 'User registered successfully',
       token,
-      user: userObj
+      user
     });
-    // DO NOT put any code after this return!
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({
@@ -104,9 +98,6 @@ router.post('/login', loginValidation, validateRequest, async (req, res) => {
     // Generate token
     const token = generateToken(user._id);
 
-    // Remove password from response
-    user.password = undefined;
-
     res.json({
       success: true,
       message: 'Login successful',
@@ -129,9 +120,18 @@ router.get('/me', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
     res.json({
       success: true,
-      user
+      data: {
+        user
+      }
     });
   } catch (error) {
     res.status(500).json({

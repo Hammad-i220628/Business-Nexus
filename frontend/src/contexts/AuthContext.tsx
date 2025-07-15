@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (token) {
         try {
           const response = await authAPI.getCurrentUser();
-          setUser(response.data.user);
+          setUser(response.user || response.data?.user);
         } catch (error) {
           console.error('Failed to get current user:', error);
           localStorage.removeItem('token');
@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       const response = await authAPI.login({ email, password });
-      const { token, user } = response.data;
+      const { token, user } = response;
       
       localStorage.setItem('token', token);
       localStorage.setItem('currentUser', JSON.stringify(user));
@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       const response = await authAPI.register(userData);
-      const { token, user } = response.data;
+      const { token, user } = response;
       
       localStorage.setItem('token', token);
       localStorage.setItem('currentUser', JSON.stringify(user));
