@@ -5,9 +5,11 @@ import { mockCollaborationRequests, mockInvestors } from '../../data/mockData';
 import { RequestCard } from '../../components/requests/RequestCard';
 import { Card, CardHeader, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
+import { useNavigate } from 'react-router-dom';
 
 export const EntrepreneurDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   const userRequests = mockCollaborationRequests.filter(req => req.entrepreneurId === user?.id);
   const pendingRequests = userRequests.filter(req => req.status === 'pending');
@@ -39,7 +41,7 @@ export const EntrepreneurDashboard: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back, {user?.name}!</h1>
           <p className="text-gray-600 dark:text-gray-300">Track your startup's progress and investor connections</p>
         </div>
-        <Button variant="primary">Update Profile</Button>
+        <Button variant="primary" onClick={() => navigate('/profile')}>Update Profile</Button>
       </div>
 
       {/* Stats */}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Search, Phone, Video, MoreVertical } from 'lucide-react';
+import { Send, Search, Phone, Video, MoreVertical, ArrowLeft } from 'lucide-react';
 import { mockMessages, mockUsers } from '../../data/mockData';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { Card, CardHeader, CardContent } from '../../components/ui/Card';
@@ -12,6 +12,9 @@ export const MessagesPage: React.FC = () => {
   const { user } = useAuth();
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState('');
+
+  // Responsive: detect mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   // Get unique conversations for the current user
   const conversations = mockMessages
@@ -47,9 +50,9 @@ export const MessagesPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex h-[calc(100vh-8rem)] gap-6">
+      <div className={`flex h-[calc(100vh-8rem)] gap-6 ${isMobile ? 'flex-col' : ''}`}>
         {/* Conversations List */}
-        <Card className="w-80 flex flex-col">
+        <Card className={`${isMobile ? (selectedChat ? 'hidden' : 'block') : 'block'} w-full md:w-80 flex flex-col`}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Messages</h2>
@@ -99,13 +102,19 @@ export const MessagesPage: React.FC = () => {
         </Card>
 
         {/* Chat Area */}
-        <Card className="flex-1 flex flex-col">
+        <Card className={`${isMobile ? (!selectedChat ? 'hidden' : 'block') : 'block'} flex-1 flex flex-col`}>
           {selectedConversation ? (
             <>
               {/* Chat Header */}
               <CardHeader className="border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
+                    {/* Back button for mobile */}
+                    {isMobile && (
+                      <button onClick={() => setSelectedChat(null)} className="mr-2 text-blue-500" aria-label="Back">
+                        <ArrowLeft className="w-5 h-5" />
+                      </button>
+                    )}
                     <Avatar
                       src={selectedConversation.otherUser.avatar}
                       alt={selectedConversation.otherUser.name}

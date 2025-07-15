@@ -1,5 +1,4 @@
 import React from 'react';
-import { User } from 'lucide-react';
 
 interface AvatarProps {
   src?: string;
@@ -21,15 +20,8 @@ export const Avatar: React.FC<AvatarProps> = ({
     xl: 'w-24 h-24'
   };
 
-  const iconSizeClasses = {
-    sm: 'w-5 h-5',
-    md: 'w-6 h-6',
-    lg: 'w-8 h-8',
-    xl: 'w-12 h-12'
-  };
-
   return (
-    <div className={`${sizeClasses[size]} rounded-full overflow-hidden bg-gray-200 flex items-center justify-center ${className}`}>
+    <div className={`${sizeClasses[size]} rounded-full overflow-hidden bg-blue-100 flex items-center justify-center ${className}`}>
       {src ? (
         <img
           src={src}
@@ -37,7 +29,11 @@ export const Avatar: React.FC<AvatarProps> = ({
           className="w-full h-full object-cover"
         />
       ) : (
-        <User className={`${iconSizeClasses[size]} text-gray-400`} />
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+          <circle cx="16" cy="16" r="16" fill="#3B82F6" />
+          <circle cx="16" cy="13" r="6" fill="white" />
+          <ellipse cx="16" cy="23" rx="9" ry="5" fill="white" />
+        </svg>
       )}
     </div>
   );
