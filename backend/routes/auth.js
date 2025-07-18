@@ -30,7 +30,7 @@ router.post('/register', registerValidation, validateRequest, async (req, res) =
     }
 
     // Create user
-    const user = await User.create({
+    let user = await User.create({
       name,
       email,
       password,
@@ -41,6 +41,12 @@ router.post('/register', registerValidation, validateRequest, async (req, res) =
 
     // Generate token
     const token = generateToken(user._id);
+
+    // Convert user to object and remove password
+    user = user.toObject();
+    delete user.password;
+    user.id = user._id;
+    delete user._id;
 
     res.status(201).json({
       success: true,
@@ -101,6 +107,8 @@ router.post('/login', loginValidation, validateRequest, async (req, res) => {
     // Convert user to object and remove password
     user = user.toObject();
     delete user.password;
+    user.id = user._id;
+    delete user._id;
 
     res.json({
       success: true,
