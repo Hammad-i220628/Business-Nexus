@@ -32,10 +32,11 @@ router.get('/entrepreneurs', protect, authorize('investor'), async (req, res) =>
       if (maxFunding) query.fundingNeeded.$lte = parseInt(maxFunding);
     }
 
+    // Only show entrepreneurs with @gmail.com emails (real signups)
+    query.email = /@gmail\.com$/i;
+
     const entrepreneurs = await User.find(query)
       .select('-password')
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
 
     const total = await User.countDocuments(query);

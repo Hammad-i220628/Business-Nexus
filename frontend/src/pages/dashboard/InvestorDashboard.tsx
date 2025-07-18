@@ -19,6 +19,10 @@ interface Entrepreneur {
   avatar: string;
   location: string;
   bio: string;
+  stage?: 'idea' | 'prototype' | 'mvp' | 'growth' | 'expansion';
+  teamSize?: number;
+  createdAt?: string;
+  website?: string;
 }
 
 export const InvestorDashboard: React.FC = () => {
@@ -45,7 +49,8 @@ export const InvestorDashboard: React.FC = () => {
       setLoading(true);
       const response = await usersAPI.getEntrepreneurs({
         search: searchTerm,
-        industry: selectedIndustry
+        industry: selectedIndustry,
+        limit: 1000 // Show up to 1000 entrepreneurs, effectively all
       });
       setEntrepreneurs(response.data.data || []);
     } catch (error) {
@@ -84,10 +89,10 @@ export const InvestorDashboard: React.FC = () => {
   };
 
   const statsData = [
-    { label: 'Total Entrepreneurs', value: stats.totalEntrepreneurs.toString(), icon: Users, color: 'text-blue-600' },
-    { label: 'Active Requests', value: stats.activeRequests.toString(), icon: FileText, color: 'text-purple-600' },
-    { label: 'This Month', value: stats.thisMonth.toString(), icon: TrendingUp, color: 'text-green-600' },
-    { label: 'Messages', value: stats.messages.toString(), icon: MessageSquare, color: 'text-orange-600' }
+    { label: 'Total Entrepreneurs', value: (stats.totalEntrepreneurs ?? 0).toString(), icon: Users, color: 'text-blue-600' },
+    { label: 'Active Requests', value: (stats.activeRequests ?? 0).toString(), icon: FileText, color: 'text-purple-600' },
+    { label: 'This Month', value: (stats.thisMonth ?? 0).toString(), icon: TrendingUp, color: 'text-green-600' },
+    { label: 'Messages', value: (stats.messages ?? 0).toString(), icon: MessageSquare, color: 'text-orange-600' }
   ];
 
   const industries = [...new Set(entrepreneurs.map(e => e.industry))];
@@ -174,19 +179,20 @@ export const InvestorDashboard: React.FC = () => {
                 key={entrepreneur._id}
                 entrepreneur={{
                   id: entrepreneur._id,
-                  name: entrepreneur.name,
-                  email: entrepreneur.email,
+                  name: entrepreneur.name || 'No Name',
+                  email: entrepreneur.email || 'No Email',
                   role: 'entrepreneur',
-                  startup: entrepreneur.startup,
-                  industry: entrepreneur.industry,
-                  fundingNeeded: entrepreneur.fundingNeeded,
-                  pitchSummary: entrepreneur.pitchSummary,
-                  avatar: entrepreneur.avatar,
-                  location: entrepreneur.location,
-                  bio: entrepreneur.bio,
-                  stage: 'mvp',
-                  teamSize: 5,
-                  createdAt: new Date().toISOString()
+                  startup: entrepreneur.startup || '',
+                  industry: entrepreneur.industry || '',
+                  fundingNeeded: entrepreneur.fundingNeeded ?? 0,
+                  pitchSummary: entrepreneur.pitchSummary || '',
+                  avatar: entrepreneur.avatar || '',
+                  location: entrepreneur.location || '',
+                  bio: entrepreneur.bio || '',
+                  stage: entrepreneur.stage || 'idea',
+                  teamSize: entrepreneur.teamSize ?? 1,
+                  createdAt: entrepreneur.createdAt || new Date().toISOString(),
+                  website: entrepreneur.website || ''
                 }}
                 onMessage={() => handleMessage(entrepreneur._id)}
                 onRequest={() => handleRequest(entrepreneur._id)}
