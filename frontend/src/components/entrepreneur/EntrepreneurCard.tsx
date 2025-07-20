@@ -7,6 +7,13 @@ import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { useNavigate } from 'react-router-dom';
 
+const defaultUserIcon = (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="8" r="5" fill="#bbb" />
+    <path d="M4 20c0-3.3137 3.134-6 7-6s7 2.6863 7 6" fill="#bbb" />
+  </svg>
+);
+
 interface EntrepreneurCardProps {
   entrepreneur: Entrepreneur;
   onMessage: (entrepreneurId: string) => void;
@@ -47,7 +54,7 @@ export const EntrepreneurCard: React.FC<EntrepreneurCardProps> = ({
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
-            <Avatar src={entrepreneur.avatar} alt={entrepreneur.name} size="md" />
+            {defaultUserIcon}
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   onClick={handleViewProfile}>

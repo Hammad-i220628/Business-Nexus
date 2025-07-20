@@ -65,8 +65,8 @@ router.get('/entrepreneurs', protect, authorize('investor'), async (req, res) =>
 
 // @desc    Get all investors (for entrepreneurs)
 // @route   GET /api/users/investors
-// @access  Private (Entrepreneurs only)
-router.get('/investors', protect, authorize('entrepreneur'), async (req, res) => {
+// @access  Private (All authenticated users)
+router.get('/investors', protect, async (req, res) => {
   try {
     const { page = 1, limit = 50, industry, search, minInvestment, maxInvestment } = req.query;
     

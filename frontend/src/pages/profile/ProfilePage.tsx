@@ -8,6 +8,13 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
 
+const defaultUserIcon = (
+  <svg width="96" height="96" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="8" r="8" fill="#bbb" />
+    <path d="M4 22c0-4.4183 3.582-8 8-8s8 3.5817 8 8" fill="#bbb" />
+  </svg>
+);
+
 export const ProfilePage: React.FC = () => {
   const { user, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -72,12 +79,9 @@ export const ProfilePage: React.FC = () => {
             <CardContent className="p-6">
               <div className="text-center">
                 <div className="relative inline-block">
-                  <Avatar
-                    src={user?.avatar}
-                    alt={user?.name}
-                    size="xl"
-                    className="mx-auto"
-                  />
+                  <div className="mx-auto mb-4 flex justify-center items-center">
+                    {defaultUserIcon}
+                  </div>
                   {isEditing && (
                     <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
                       <Camera className="w-4 h-4" />

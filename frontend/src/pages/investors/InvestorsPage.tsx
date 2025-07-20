@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
-import { mockInvestors } from '../../data/mockData';
+import { usersAPI } from '../../services/api';
 import { InvestorCard } from '../../components/investor/InvestorCard';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { Card, CardHeader } from '../../components/ui/Card';
@@ -12,15 +12,34 @@ export const InvestorsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState('');
+  const [investors, setInvestors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredInvestors = mockInvestors.filter(investor => {
-    const matchesSearch = investor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         investor.company.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesIndustry = !selectedIndustry || investor.industries.includes(selectedIndustry);
+  useEffect(() => {
+    fetchInvestors();
+  }, []);
+
+  const fetchInvestors = async () => {
+    try {
+      setLoading(true);
+      const response = await usersAPI.getInvestors({ limit: 100 });
+      setInvestors(response.data || []);
+      console.log('Fetched investors:', response.data || []);
+    } catch (error) {
+      setInvestors([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredInvestors = investors.filter(investor => {
+    const matchesSearch = investor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (investor.company || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesIndustry = !selectedIndustry || (investor.industries || []).includes(selectedIndustry);
     return matchesSearch && matchesIndustry;
   });
 
-  const industries = [...new Set(mockInvestors.flatMap(inv => inv.industries))];
+  const industries = [...new Set(investors.flatMap(inv => inv.industries || []))];
 
   const handleMessage = (investorId: string) => {
     navigate(`/chat/${investorId}`);
@@ -70,15 +89,21 @@ export const InvestorsPage: React.FC = () => {
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
             Available Investors ({filteredInvestors.length})
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredInvestors.map(investor => (
-              <InvestorCard
-                key={investor.id}
-                investor={investor}
-                onMessage={handleMessage}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center py-8">Loading investors...</div>
+          ) : filteredInvestors.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No investors found.</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredInvestors.map(investor => (
+                <InvestorCard
+                  key={investor._id}
+                  investor={investor}
+                  onMessage={handleMessage}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

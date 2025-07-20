@@ -2,8 +2,14 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Building2, Bell, Search, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Avatar } from '../ui/Avatar';
 import { Button } from '../ui/Button';
+
+const defaultUserIcon = (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="8" r="5" fill="#bbb" />
+    <path d="M4 20c0-3.3137 3.134-6 7-6s7 2.6863 7 6" fill="#bbb" />
+  </svg>
+);
 
 interface NavbarProps {
   setSidebarOpen: (open: boolean) => void;
@@ -57,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setSidebarOpen }) => {
             </button>
 
             <div className="flex items-center space-x-3">
-              <Avatar src={user?.avatar} alt={user?.name} size="sm" />
+              {defaultUserIcon}
               <div className="hidden md:block">
                 <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.role}</p>

@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, Users, MessageSquare, FileText, DollarSign, Eye } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { usersAPI, requestsAPI } from '../../services/api';
@@ -44,6 +43,13 @@ interface Request {
   createdAt: string;
   updatedAt: string;
 }
+
+const defaultUserIcon = (
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="8" r="5" fill="#bbb" />
+    <path d="M4 20c0-3.3137 3.134-6 7-6s7 2.6863 7 6" fill="#bbb" />
+  </svg>
+);
 
 export const EntrepreneurDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -234,11 +240,7 @@ export const EntrepreneurDashboard: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {investors.slice(0, 6).map(investor => (
                 <div key={investor._id} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <img
-                    src={investor.avatar || 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2'}
-                    alt={investor.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
+                  {defaultUserIcon}
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-gray-900 dark:text-white truncate">{investor.name}</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{investor.company}</p>

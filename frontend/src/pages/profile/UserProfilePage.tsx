@@ -9,6 +9,13 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { useAuth } from '../../contexts/AuthContext';
 
+const defaultUserIcon = (
+  <svg width="96" height="96" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="8" r="8" fill="#bbb" />
+    <path d="M4 22c0-4.4183 3.582-8 8-8s8 3.5817 8 8" fill="#bbb" />
+  </svg>
+);
+
 export const UserProfilePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -92,12 +99,7 @@ export const UserProfilePage: React.FC = () => {
           <Card className="lg:col-span-1">
             <CardContent className="p-6">
               <div className="text-center">
-                <Avatar
-                  src={user.avatar}
-                  alt={user.name}
-                  size="xl"
-                  className="mx-auto mb-4"
-                />
+                {defaultUserIcon}
                 
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{user.name}</h1>
                 <Badge variant="primary" className="mb-3">

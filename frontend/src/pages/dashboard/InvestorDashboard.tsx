@@ -3,6 +3,7 @@ import { Search, Filter, TrendingUp, Users, MessageSquare, FileText } from 'luci
 import { useAuth } from '../../contexts/AuthContext';
 import { usersAPI } from '../../services/api';
 import { EntrepreneurCard } from '../../components/entrepreneur/EntrepreneurCard';
+import { CompactEntrepreneurCard } from '../../components/entrepreneur/CompactEntrepreneurCard';
 import { Card, CardHeader, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -195,12 +196,11 @@ export const InvestorDashboard: React.FC = () => {
         </CardHeader>
       </Card>
 
-      {/* Entrepreneurs Grid */}
+      {/* Entrepreneurs List (Compact) */}
       <div>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-          Discover Entrepreneurs ({entrepreneurs.length})
+          Available Entrepreneurs ({entrepreneurs.length})
         </h2>
-        
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -210,29 +210,13 @@ export const InvestorDashboard: React.FC = () => {
             <p className="text-gray-500 dark:text-gray-400">No entrepreneurs found matching your criteria.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div>
             {entrepreneurs.map(entrepreneur => (
-              <EntrepreneurCard
+              <CompactEntrepreneurCard
                 key={entrepreneur._id}
-                entrepreneur={{
-                  id: entrepreneur._id,
-                  name: entrepreneur.name || 'No Name',
-                  email: entrepreneur.email || 'No Email',
-                  role: 'entrepreneur',
-                  startup: entrepreneur.startup || '',
-                  industry: entrepreneur.industry || '',
-                  fundingNeeded: entrepreneur.fundingNeeded ?? 0,
-                  pitchSummary: entrepreneur.pitchSummary || '',
-                  avatar: entrepreneur.avatar || '',
-                  location: entrepreneur.location || '',
-                  bio: entrepreneur.bio || '',
-                  stage: entrepreneur.stage || 'idea',
-                  teamSize: entrepreneur.teamSize ?? 1,
-                  createdAt: entrepreneur.createdAt || new Date().toISOString(),
-                  website: entrepreneur.website || ''
-                }}
-                onMessage={() => handleMessage(entrepreneur._id)}
-                onRequest={() => handleRequest(entrepreneur._id)}
+                entrepreneur={entrepreneur}
+                onMessage={handleMessage}
+                onRequest={handleRequest}
               />
             ))}
           </div>
