@@ -42,7 +42,24 @@ export const InvestorDashboard: React.FC = () => {
   useEffect(() => {
     fetchEntrepreneurs();
     fetchStats();
+    
+    // Set up auto-refresh every 30 seconds to catch new entrepreneurs
+    const interval = setInterval(() => {
+      fetchEntrepreneurs();
+      fetchStats();
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  // Also refresh when search term or industry changes
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchEntrepreneurs();
+    }, 500); // Debounce search
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, selectedIndustry]);
 
   const fetchEntrepreneurs = async () => {
     try {
@@ -50,11 +67,14 @@ export const InvestorDashboard: React.FC = () => {
       const response = await usersAPI.getEntrepreneurs({
         search: searchTerm,
         industry: selectedIndustry,
-        limit: 1000 // Show up to 1000 entrepreneurs, effectively all
+        limit: 100
       });
-      setEntrepreneurs(response.data.data || []);
+      console.log('Entrepreneurs response:', response);
+      // Fix: Use response.data (array of entrepreneurs)
+      setEntrepreneurs(response.data || []);
     } catch (error) {
       console.error('Failed to fetch entrepreneurs:', error);
+      setEntrepreneurs([]);
     } finally {
       setLoading(false);
     }
@@ -63,9 +83,23 @@ export const InvestorDashboard: React.FC = () => {
   const fetchStats = async () => {
     try {
       const response = await usersAPI.getDashboardStats();
-      setStats(response.data);
+      console.log('Stats response:', response);
+      const statsData = response.data || response || {};
+      setStats({
+        totalEntrepreneurs: 0,
+        activeRequests: 0,
+        thisMonth: 0,
+        messages: 0,
+        ...statsData
+      });
     } catch (error) {
       console.error('Failed to fetch stats:', error);
+      setStats({
+        totalEntrepreneurs: 0,
+        activeRequests: 0,
+        thisMonth: 0,
+        messages: 0
+      });
     }
   };
 
@@ -104,6 +138,9 @@ export const InvestorDashboard: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back, {user?.name}!</h1>
           <p className="text-gray-600 dark:text-gray-300">Discover promising entrepreneurs and startups</p>
         </div>
+        <Button variant="outline" onClick={fetchEntrepreneurs}>
+          Refresh
+        </Button>
       </div>
 
       {/* Stats */}

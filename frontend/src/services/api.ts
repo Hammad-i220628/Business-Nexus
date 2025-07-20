@@ -60,20 +60,38 @@ export const authAPI = {
 // Users API
 export const usersAPI = {
   getEntrepreneurs: async (params?: any) => {
-    const response = await api.get('/users/entrepreneurs', { params });
-    return response.data;
+    try {
+      const response = await api.get('/users/entrepreneurs', { params });
+      console.log('Raw entrepreneurs API response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching entrepreneurs:', error);
+      throw error;
+    }
   },
   getInvestors: async (params?: any) => {
-    const response = await api.get('/users/investors', { params });
-    return response.data;
+    try {
+      const response = await api.get('/users/investors', { params });
+      console.log('Raw investors API response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching investors:', error);
+      throw error;
+    }
   },
   getUserById: async (id: string) => {
     const response = await api.get(`/users/${id}`);
     return response.data;
   },
   getDashboardStats: async () => {
-    const response = await api.get('/users/stats/dashboard');
-    return response.data;
+    try {
+      const response = await api.get('/users/stats/dashboard');
+      console.log('Raw stats API response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+      throw error;
+    }
   },
 };
 

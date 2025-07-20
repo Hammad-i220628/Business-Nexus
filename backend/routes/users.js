@@ -9,7 +9,7 @@ const router = express.Router();
 // @access  Private (Investors only)
 router.get('/entrepreneurs', protect, authorize('investor'), async (req, res) => {
   try {
-    const { page = 1, limit = 10, industry, search, minFunding, maxFunding } = req.query;
+    const { page = 1, limit = 50, industry, search, minFunding, maxFunding } = req.query;
     
     // Build query
     const query = { role: 'entrepreneur', isActive: true };
@@ -32,14 +32,16 @@ router.get('/entrepreneurs', protect, authorize('investor'), async (req, res) =>
       if (maxFunding) query.fundingNeeded.$lte = parseInt(maxFunding);
     }
 
-    // Only show entrepreneurs with @gmail.com emails (real signups)
-    query.email = /@gmail\.com$/i;
-
     const entrepreneurs = await User.find(query)
       .select('-password')
-      .sort({ createdAt: -1 });
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 }) // Newest first
+      .lean(); // Better performance
 
     const total = await User.countDocuments(query);
+
+    console.log(`Found ${entrepreneurs.length} entrepreneurs out of ${total} total`);
 
     res.json({
       success: true,
@@ -52,6 +54,7 @@ router.get('/entrepreneurs', protect, authorize('investor'), async (req, res) =>
       }
     });
   } catch (error) {
+    console.error('Error fetching entrepreneurs:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -65,7 +68,7 @@ router.get('/entrepreneurs', protect, authorize('investor'), async (req, res) =>
 // @access  Private (Entrepreneurs only)
 router.get('/investors', protect, authorize('entrepreneur'), async (req, res) => {
   try {
-    const { page = 1, limit = 10, industry, search, minInvestment, maxInvestment } = req.query;
+    const { page = 1, limit = 50, industry, search, minInvestment, maxInvestment } = req.query;
     
     // Build query
     const query = { role: 'investor', isActive: true };
@@ -108,6 +111,7 @@ router.get('/investors', protect, authorize('entrepreneur'), async (req, res) =>
       }
     });
   } catch (error) {
+    console.error('Error fetching investors:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -163,14 +167,44 @@ router.get('/stats/dashboard', protect, async (req, res) => {
         isActive: true 
       });
       
+      const Request = (await import('../models/Request.js')).default;
+      const activeRequests = await Request.countDocuments({
+        investor: req.user.id,
+        status: 'pending'
+      });
+      
+      const acceptedRequests = await Request.countDocuments({
+        investor: req.user.id,
+        status: 'accepted'
+      });
+      
       stats.totalEntrepreneurs = totalEntrepreneurs;
+      stats.activeRequests = activeRequests;
+      stats.acceptedRequests = acceptedRequests;
+      stats.thisMonth = totalEntrepreneurs; // Placeholder
+      stats.messages = 0; // Placeholder
     } else {
       const totalInvestors = await User.countDocuments({ 
         role: 'investor', 
         isActive: true 
       });
       
+      const Request = (await import('../models/Request.js')).default;
+      const pendingRequests = await Request.countDocuments({
+        entrepreneur: req.user.id,
+        status: 'pending'
+      });
+      
+      const acceptedRequests = await Request.countDocuments({
+        entrepreneur: req.user.id,
+        status: 'accepted'
+      });
+      
       stats.totalInvestors = totalInvestors;
+      stats.pendingRequests = pendingRequests;
+      stats.acceptedRequests = acceptedRequests;
+      stats.profileViews = 1234; // Placeholder
+      stats.messages = 156; // Placeholder
     }
 
     res.json({
@@ -178,6 +212,7 @@ router.get('/stats/dashboard', protect, async (req, res) => {
       data: stats
     });
   } catch (error) {
+    console.error('Error fetching dashboard stats:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',

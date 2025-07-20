@@ -1,13 +1,20 @@
 import React from 'react';
 import { Clock, CheckCircle, XCircle, User } from 'lucide-react';
-import { CollaborationRequest } from '../../types';
 import { Card, CardHeader, CardContent, CardFooter } from '../ui/Card';
 import { Avatar } from '../ui/Avatar';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 
+interface Request {
+  _id: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface RequestCardProps {
-  request: CollaborationRequest;
+  request: Request;
   userRole: 'investor' | 'entrepreneur';
   otherUser: {
     name: string;
@@ -82,7 +89,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onReject?.(request.id)}
+                onClick={() => onReject?.(request._id)}
                 className="flex-1"
               >
                 Decline
@@ -90,7 +97,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() => onAccept?.(request.id)}
+                onClick={() => onAccept?.(request._id)}
                 className="flex-1"
               >
                 Accept
@@ -102,7 +109,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
             <Button
               variant="primary"
               size="sm"
-              onClick={() => onMessage?.(userRole === 'investor' ? request.entrepreneurId : request.investorId)}
+              onClick={() => onMessage?.(request._id)}
               className="w-full"
             >
               Continue Conversation
@@ -113,7 +120,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onMessage?.(request.entrepreneurId)}
+              onClick={() => onMessage?.(request._id)}
               className="w-full"
             >
               Follow Up

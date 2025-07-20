@@ -77,6 +77,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('token', token);
       localStorage.setItem('currentUser', JSON.stringify(user));
       setUser(user);
+      
+      // Force a small delay to ensure the user is saved in the database
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setIsLoading(false);
       return true;
     } catch (error: any) {
