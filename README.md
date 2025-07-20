@@ -5,7 +5,6 @@ Business Nexus is a professional networking platform connecting entrepreneurs an
 ## Tech Stack
 - **Frontend:** React.js (Vite), Tailwind CSS, React Router, Context API, Axios
 - **Backend:** Node.js, Express.js, MongoDB (Mongoose), JWT, bcrypt, Socket.io
-- **Deployment:** Vercel/Netlify (frontend), Railway/Render/Heroku (backend)
 
 ## Core Features
 - User authentication (Investor/Entrepreneur roles)
@@ -14,13 +13,3 @@ Business Nexus is a professional networking platform connecting entrepreneurs an
 - Collaboration request system
 - Real-time chat (Socket.io)
 - Responsive, modern UI
-
-## Deliverables
-- Working login/register flow with API integration
-- Functional dashboards and profile pages
-- Collaboration request and chat system
-- Fully deployed frontend and backend
-
----
-
-For setup and contribution, see code comments and folder structure. 
